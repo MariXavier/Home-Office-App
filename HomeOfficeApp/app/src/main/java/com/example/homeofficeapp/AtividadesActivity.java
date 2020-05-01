@@ -1,11 +1,15 @@
 package com.example.homeofficeapp;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -23,9 +27,10 @@ public class AtividadesActivity extends AppCompatActivity
 {
 
     TextView textViewData, textViewHora;
-    Button buttonSalvar, buttonFinalizaAtividade;
+    Button buttonSalvar, buttonFinalizaAtividade, buttonVerAtividades;
     EditText editTextAtividades;
     Atividade atividade;
+    FirebaseAuth auth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -33,10 +38,13 @@ public class AtividadesActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_atividades);
 
+        auth = FirebaseAuth.getInstance();
+
         textViewData = findViewById(R.id.textViewData);
         textViewHora = findViewById(R.id.textViewHora);
         buttonSalvar = findViewById(R.id.buttonSalvar);
         buttonFinalizaAtividade = findViewById(R.id.buttonFinalizaAtividade);
+        buttonVerAtividades = findViewById(R.id.buttonVerAtividades);
         editTextAtividades = findViewById(R.id.editTextAtividades);
 
         SharedPreferences preferencesAtividades = getSharedPreferences("Atividades", MODE_PRIVATE);
@@ -119,6 +127,32 @@ public class AtividadesActivity extends AppCompatActivity
                 dialog.show();
             }
         });
+
+        buttonVerAtividades.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                startActivity(new Intent(AtividadesActivity.this, VisualizaAtividadesActivity.class));
+            }
+        });
+    }
+
+    public boolean onCreateOptionsMenu(Menu menu)
+    {
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        return true;
+    }
+
+    public boolean onOptionsItemSelected(@NonNull MenuItem item)
+    {
+        switch (item.getItemId())
+        {
+            case R.id.menuSair:
+                auth.signOut();
+                startActivity(new Intent(AtividadesActivity.this, MainActivity.class));
+        }
+       return super.onOptionsItemSelected(item);
     }
 
     public void salvaAtividadesLocal()
@@ -181,8 +215,6 @@ public class AtividadesActivity extends AppCompatActivity
         atividade.setIdFuncionario(idUsuarioLogado);
 
         atividade.setAtividadeFinalizada();
-
-        /* */
     }
 
 

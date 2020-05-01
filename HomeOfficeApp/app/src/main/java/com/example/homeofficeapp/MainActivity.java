@@ -26,10 +26,11 @@ public class MainActivity extends AppCompatActivity
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        getSupportActionBar().hide();
 
         auth = FirebaseAuth.getInstance();
 
-        if(!auth.getCurrentUser().toString().isEmpty())
+        if(auth.getUid() != null)
         {
             Intent atividades = new Intent(MainActivity.this, AtividadesActivity.class);
             startActivity(atividades);
